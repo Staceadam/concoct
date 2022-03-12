@@ -69,8 +69,15 @@ function _createSuper(Derived) {
         return _possibleConstructorReturn(this, result);
     };
 }
-import { transformSync } from '@swc/core';
+import { transform } from '@swc/core';
 import { Visitor } from '@swc/core/Visitor.js';
+import chalk from 'chalk';
+import size from 'window-size';
+import repeat from 'repeat-string';
+var log = console.log;
+var error = chalk.bold.red;
+var def = chalk.bold.green;
+var suc = chalk.bold.blue;
 var PotionParser = /*#__PURE__*/ function(Visitor1) {
     "use strict";
     _inherits(PotionParser, Visitor1);
@@ -80,24 +87,36 @@ var PotionParser = /*#__PURE__*/ function(Visitor1) {
         return _super.apply(this, arguments);
     }
     var _proto = PotionParser.prototype;
-    _proto.visitCallExpression = function visitCallExpression(expression) {
-        console.log('===============================');
-        console.log('∆', expression);
-        console.log('===============================');
-        return expression;
+    _proto.visitTsType = function visitTsType(exp) {
+        if (exp.kind === 'string') {
+            log(def(repeat('=', size.get().width)));
+            log(exp);
+            log(def(repeat('=', size.get().width)));
+        }
+        return exp;
     };
     return PotionParser;
 }(Visitor);
 // temp testing string code first before setting up importing file
-var out = transformSync("\nconst Modal = `\n    id: string;\n    title: string;\n    desc: string;\n`\n", {
-    plugin: function(module) {
-        console.log('<<<<<<<<<<<<<<<<<<<<<<<<');
-        console.log('M', module);
-        console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
-        return new PotionParser().visitProgram(module);
+transform("\ninterface EventData {\n    id: number;\n    title: string;\n    desc: string;\n}\n", {
+    jsc: {
+        parser: {
+            syntax: 'typescript'
+        }
+    },
+    plugin: function(m) {
+        log(suc(repeat('>', size.get().width)));
+        log(m);
+        log(suc(repeat('>', size.get().width)));
+        return new PotionParser().visitProgram(m);
     }
+}).then(function(output) {
+    // what it does look like now
+    log(repeat('=', size.get().width));
+    log(output.code);
+    log(repeat('=', size.get().width));
+}).catch(function(err) {
+    log(error(repeat('+', size.get().width)));
+    log(error(err));
+    log(error(repeat('+', size.get().width)));
 });
-// what it does look like now
-console.log(out);
-// what it should output
-out.code === "";
