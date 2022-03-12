@@ -2,7 +2,7 @@
 import path from 'path'
 import fs from 'fs'
 
-const SCHEMA_PATH = path.resolve(__dirname, 'schema.concoct')
+const SCHEMA_PATH = path.resolve('schema.potion')
 
 const getSchema = () => {
     try {
