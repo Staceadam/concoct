@@ -1,0 +1,52 @@
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  role     Role     @default(USER)
+  // this is prisma only to access relationship based off of foreign key
+  lists    List[]
+  profile  Profile?
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  name   String?
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+model List {
+  id        Int      @id @default(autoincrement())
+  type  Type
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @unique
+  ownerId   Int  
+  // this is prisma only field to establish foreign key on db
+  owner     User     @relation(fields: [ownerId], references: [id])
+  cards      Card[]
+}
+
+enum Type {
+  MTG
+  POKEMON
+}
+
+model Card {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  price       Float
+  quantity    Int     @default(1)
+  description String
+  listId      Int
+  // this is prisma only field to establish foreign key on db
+  list        List     @relation(fields: [listId], references: [id])
+}

@@ -1,0 +1,21 @@
+{
+    "name": "concoct",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "keywords": [],
+    "author": "Stacy Adam",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/jest": "^27.4.1",
+        "jest": "^27.5.1",
+        "typescript": "^4.6.2"
+    },
+    "dependencies": {
+        "nodemon": "^2.0.15",
+        "ts-node": "^10.7.0"
+    }
+}
